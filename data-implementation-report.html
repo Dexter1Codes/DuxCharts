@@ -1,0 +1,428 @@
+<title>Data and Implementation Report</title>
+<style>
+  /* Layout: progress report — numbered sections, data tables, findings callouts. Matches the Milestone-1 proposal palette. */
+  :root {
+    color-scheme: light;
+    --bg:#f6f5f1; --surface:#fffefb; --surface-2:#faf8f2;
+    --ink:#1b1f23; --ink-soft:#4c555d; --ink-faint:#818d96;
+    --line:#e2ddd2; --line-soft:#ece8df;
+    --accent:#0b7a63; --accent-sb:#e3f0ec;
+    --warn:#a8631b; --warn-sb:#f6ece0;
+    --radius:10px; --maxw:820px;
+    --font-display:"IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-body:"IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
+      --bg:#14171a; --surface:#1c2024; --surface-2:#1f2429; --ink:#e9e7e0;
+      --ink-soft:#b2b7bb; --ink-faint:#7d868d; --line:#2d333a; --line-soft:#242a30;
+      --accent:#4fc0a4; --accent-sb:#16302a; --warn:#d79a54; --warn-sb:#33281a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:#14171a; --surface:#1c2024; --surface-2:#1f2429; --ink:#e9e7e0;
+    --ink-soft:#b2b7bb; --ink-faint:#7d868d; --line:#2d333a; --line-soft:#242a30;
+    --accent:#4fc0a4; --accent-sb:#16302a; --warn:#d79a54; --warn-sb:#33281a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);
+       font-size:15.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-block:48px 72px;padding-inline:20px}
+
+  .cover{border-bottom:2px solid var(--ink);padding-bottom:26px}
+  .eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--accent);margin:0}
+  h1{font-family:var(--font-display);font-weight:600;font-size:clamp(27px,5.2vw,40px);
+     line-height:1.08;letter-spacing:-.01em;text-wrap:balance;margin:13px 0 0}
+  .subtitle{color:var(--ink-soft);font-size:16px;margin:10px 0 0}
+  .cover-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+              gap:2px 20px;margin-top:24px;border:1px solid var(--line);
+              border-radius:var(--radius);overflow:hidden}
+  .cm{padding:11px 14px;background:var(--surface);border-bottom:1px solid var(--line-soft)}
+  .cm .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.07em;
+         text-transform:uppercase;color:var(--ink-faint)}
+  .cm .v{font-size:14px;margin-top:3px}
+
+  .toc{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);
+       padding:18px 20px;margin-top:26px}
+  .toc h2{font-family:var(--font-body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+          color:var(--ink-faint);margin:0 0 12px;border:none;padding:0}
+  .toc ol{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}
+  @media (max-width:540px){.toc ol{columns:1}}
+  .toc li{font-size:13.5px;margin-bottom:7px;break-inside:avoid}
+  .toc a{color:var(--ink-soft);text-decoration:none;display:flex;gap:8px}
+  .toc a:hover{color:var(--accent)}
+  .toc .n{font-family:var(--font-mono);color:var(--accent);font-size:12px;min-width:20px}
+
+  section{margin-top:44px;scroll-margin-top:16px}
+  h2.sec{font-family:var(--font-display);font-weight:600;font-size:21px;letter-spacing:-.01em;
+         margin:0 0 16px;padding-bottom:9px;border-bottom:1px solid var(--line);
+         display:flex;gap:12px;align-items:baseline;text-wrap:balance}
+  h2.sec .num{font-family:var(--font-mono);font-size:14px;color:var(--accent)}
+  h3{font-family:var(--font-body);font-weight:650;font-size:15.5px;margin:22px 0 8px}
+  h3 .sub{font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);
+          font-weight:500;letter-spacing:.05em;margin-right:8px}
+  p{margin:0 0 13px;max-width:72ch}
+  a{color:var(--accent)}
+  .lead{font-size:16px;color:var(--ink-soft)}
+
+  ul{margin:0 0 14px;padding-left:0;list-style:none}
+  ul li{position:relative;padding-left:20px;margin-bottom:7px;color:var(--ink-soft);max-width:72ch}
+  ul li::before{content:"";position:absolute;left:3px;top:10px;width:5px;height:5px;
+                border-radius:50%;background:var(--accent)}
+
+  .callout{border-radius:var(--radius);padding:15px 18px;margin:16px 0;border:1px solid}
+  .callout.accent{background:var(--accent-sb);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+  .callout.warn{background:var(--warn-sb);border-color:color-mix(in srgb,var(--warn) 32%,transparent)}
+  .callout .lbl{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.09em;
+                text-transform:uppercase;margin:0 0 6px}
+  .callout.accent .lbl{color:var(--accent)}
+  .callout.warn .lbl{color:var(--warn)}
+  .callout p{margin:0;font-size:14px;color:var(--ink-soft)}
+  .callout p + p{margin-top:8px}
+
+  .table-scroll{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:var(--radius)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
+  th,td{text-align:left;padding:10px 13px;vertical-align:top;border-bottom:1px solid var(--line-soft)}
+  th{background:var(--surface-2);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;
+     text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+  tbody tr:last-child td{border-bottom:none}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.sym{font-family:var(--font-mono);font-size:12px;color:var(--accent);white-space:nowrap}
+  code{font-family:var(--font-mono);font-size:12.5px;background:var(--surface-2);
+       border:1px solid var(--line-soft);border-radius:4px;padding:1px 5px}
+
+  pre{overflow-x:auto;background:var(--surface-2);border:1px solid var(--line);
+      border-radius:var(--radius);padding:14px 16px;margin:14px 0}
+  pre code{background:none;border:none;padding:0;font-size:12.5px;line-height:1.55}
+
+  footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);
+         font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);letter-spacing:.02em}
+  a:focus-visible,.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;650&family=IBM+Plex+Serif:wght@500;600&display=swap">
+
+<div class="wrap">
+
+  <div class="cover">
+    <p class="eyebrow">Capstone · Progress report · Data and implementation</p>
+    <h1>Data and Implementation Report</h1>
+    <p class="subtitle">What data the project now holds, how it was verified, what the Closing Auction Session is and what our data shows about it, and how all of it becomes the working platform.</p>
+    <div class="cover-meta">
+      <div class="cm"><div class="k">Project</div><div class="v">AI-Driven Intraday Market Intelligence</div></div>
+      <div class="cm"><div class="k">Team</div><div class="v">Dhairya Upadhyay, Aayush Ranjan, Mridul Kumar</div></div>
+      <div class="cm"><div class="k">Guide</div><div class="v">Dr. Vaibhav Tiwari</div></div>
+      <div class="cm"><div class="k">Institution</div><div class="v">Bennett University</div></div>
+      <div class="cm"><div class="k">Report date</div><div class="v">27 October 2026</div></div>
+      <div class="cm"><div class="k">Next milestone</div><div class="v">M-2, 30 November 2026</div></div>
+    </div>
+  </div>
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s1"><span class="n">1</span> Summary</a></li>
+      <li><a href="#s2"><span class="n">2</span> Data we hold</a></li>
+      <li><a href="#s3"><span class="n">3</span> How the data was verified</a></li>
+      <li><a href="#s4"><span class="n">4</span> Data quality findings</a></li>
+      <li><a href="#s5"><span class="n">5</span> The Closing Auction Session</a></li>
+      <li><a href="#s6"><span class="n">6</span> Normalising four CAS layouts</a></li>
+      <li><a href="#s7"><span class="n">7</span> What our CAS data shows</a></li>
+      <li><a href="#s8"><span class="n">8</span> The working model</a></li>
+      <li><a href="#s9"><span class="n">9</span> What the December version delivers</a></li>
+      <li><a href="#s10"><span class="n">10</span> Implementation architecture</a></li>
+      <li><a href="#s11"><span class="n">11</span> Build sequence</a></li>
+      <li><a href="#s12"><span class="n">12</span> Limitations and risks</a></li>
+    </ol>
+  </nav>
+
+  <section id="s1">
+    <h2 class="sec"><span class="num">1</span> Summary</h2>
+    <p class="lead">The data layer of the project is now built and checked. We hold daily price history for six NSE instruments running from 2000 to the present day, and the complete published history of the Closing Auction Session, which NSE launched on 3 August 2026. Both sets have been cleaned into one schema and cross-checked against independent sources.</p>
+    <p>The strongest result is a validation. NSE's official auction reports and a separate commercial data provider agree exactly, on every one of 228 matched observations, that the auction price is the day's official closing price. That single check confirms the accuracy of both datasets, the correctness of our cleaning code, and the join key the whole application depends on.</p>
+    <div class="callout accent">
+      <p class="lbl">Headline result</p>
+      <p>228 of 228 matched rows, 100%, show the CAS final price equal to the official daily close. Mean absolute difference: 0.0000.</p>
+    </div>
+  </section>
+
+  <section id="s2">
+    <h2 class="sec"><span class="num">2</span> Data we hold</h2>
+
+    <h3><span class="sub">2.1</span> Daily price history</h3>
+    <p>Daily open, high, low, close and volume for six NSE instruments, sourced from investing.com and cleaned into a single schema. The history is current to the day of this report.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Symbol</th><th>Type</th><th>Rows</th><th>From</th><th>To</th></tr></thead>
+        <tbody>
+          <tr><td class="sym">NIFTY</td><td>Index</td><td class="num">6,666</td><td class="num">2000-01-03</td><td class="num">2026-10-26</td></tr>
+          <tr><td class="sym">BANKNIFTY</td><td>Index</td><td class="num">5,298</td><td class="num">2005-06-10</td><td class="num">2026-10-26</td></tr>
+          <tr><td class="sym">RELIANCE</td><td>Stock</td><td class="num">6,665</td><td class="num">2000-01-03</td><td class="num">2026-10-26</td></tr>
+          <tr><td class="sym">HDFCBANK</td><td>Stock</td><td class="num">6,665</td><td class="num">2000-01-03</td><td class="num">2026-10-26</td></tr>
+          <tr><td class="sym">ICICIBANK</td><td>Stock</td><td class="num">6,664</td><td class="num">2000-01-03</td><td class="num">2026-10-26</td></tr>
+          <tr><td class="sym">TCS</td><td>Stock</td><td class="num">5,498</td><td class="num">2004-08-26</td><td class="num">2026-10-26</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>TCS begins in 2004 because that is when it listed. BANK NIFTY begins in 2005 because the provider caps each export at about 5,000 rows, not because the history is missing. A second source holds that earlier stretch if we decide we want it.</p>
+
+    <h3><span class="sub">2.2</span> Closing Auction Session data</h3>
+    <p>Every daily CAS report NSE has published since the session launched, 57 files covering 3 August to 23 October 2026, giving 11,986 rows across 215 stocks. Each row carries the reference price, the permitted price bands, best bid and ask, the indicative equilibrium price, the final auction price, the auction volume and its value.</p>
+
+    <h3><span class="sub">2.3</span> Derived datasets</h3>
+    <ul>
+      <li>A per-stock panel joining each auction to that day's price and volume, with the auction's share of daily turnover and a percentile rank against the stock's own history.</li>
+      <li>A market-wide daily series measuring auction pressure across all 215 stocks, which stands in for the index-level view that no single auction can provide.</li>
+    </ul>
+  </section>
+
+  <section id="s3">
+    <h2 class="sec"><span class="num">3</span> How the data was verified</h2>
+    <p>We did not take any source on trust. Three checks were run.</p>
+    <h3><span class="sub">3.1</span> Full-series comparison against an independent provider</h3>
+    <p>An alternative dataset covering the same instruments was compared against Yahoo Finance day by day, not by sampling. For NIFTY, 4,501 of 4,502 overlapping days matched within 0.01%, a rate of 99.98%, with a median difference of 0.0000%. For BANK NIFTY the rate was 99.76%. A single day, 10 August 2015, differs by about 0.9% on both indices and is excluded from tolerance checks.</p>
+    <h3><span class="sub">3.2</span> Agreement between two unrelated providers</h3>
+    <p>On 3 January 2000, investing.com and the alternative dataset report identical values for NIFTY: open 1,482.15, high 1,592.90, low 1,482.15, close 1,592.20. Two providers agreeing to the paisa on a twenty-six year old session is strong evidence that neither is fabricating history.</p>
+    <h3><span class="sub">3.3</span> Agreement with contemporaneous reporting</h3>
+    <p>For 22 January 2026 the data gives a NIFTY close of 25,289.90. A news report published that afternoon states the index gained 132.40 points to end at 25,289.90. The figures match.</p>
+    <p>Taken together with the CAS validation in section 7, the price data behind this project can be considered accurate.</p>
+  </section>
+
+  <section id="s4">
+    <h2 class="sec"><span class="num">4</span> Data quality findings</h2>
+    <p>Cleaning the raw downloads surfaced several real problems. Each is handled in code rather than by hand, so the pipeline stays repeatable.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Issue</th><th>Detail</th><th>Handling</th></tr></thead>
+        <tbody>
+          <tr><td>Close column is named "Price"</td><td>And it appears before Open, so reading by position silently swaps fields</td><td>Columns are mapped by name</td></tr>
+          <tr><td>Day-first dates</td><td>03-01-2000 means 3 January, not 1 March</td><td>Explicit day-first parsing</td></tr>
+          <tr><td>Rows in reverse order</td><td>Newest first</td><td>Re-sorted ascending</td></tr>
+          <tr><td>Volume suffixes</td><td>Values like 95.47M and 665.18K</td><td>Suffix expanded to a number</td></tr>
+          <tr><td>Overlapping exports</td><td>Each symbol arrives in two files sharing one day</td><td>De-duplicated on date</td></tr>
+          <tr><td>Missing volume</td><td>454 older BANK NIFTY rows, 6 NIFTY, 1 ICICIBANK</td><td>Stored as null, never as zero</td></tr>
+          <tr><td>Thousands separators and byte-order marks</td><td>Quoted numbers, BOM on every header</td><td>Stripped on read</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>After cleaning, all six symbols pass an open, high, low and close coherence test with zero violations and zero unparsable dates.</p>
+    <p>One finding changed an earlier plan. An alternative dataset we evaluated records zero volume for indices on every row, which would have made our activity indicator impossible to compute for NIFTY and BANK NIFTY. The investing.com export carries genuine index volume, so the indicator survives. This is the reason investing.com is now the primary source.</p>
+    <div class="callout warn">
+      <p class="lbl">Caution carried forward</p>
+      <p>Historical stock prices differ between providers because they apply corporate action adjustments differently. RELIANCE on 3 January 2000 is 21.43 in one source and 23.10 in another. Index values agree exactly, so index history can be combined across sources, while stock history cannot. One provider per stock, for the whole series.</p>
+    </div>
+  </section>
+
+  <section id="s5">
+    <h2 class="sec"><span class="num">5</span> The Closing Auction Session</h2>
+    <p>The closing price of a stock carries weight out of proportion to a single number. Index funds must trade at it, derivatives settle against it, and portfolios are valued on it. Until August 2026 NSE set the close as the volume-weighted average price of the final thirty minutes, which a determined participant can influence by trading in thin late-session volume.</p>
+    <p>The Closing Auction Session replaces that with a call auction. Continuous trading stops for eligible stocks. For a few minutes orders are collected without being matched. The exchange then computes the single price at which the greatest volume can execute, and every order trades at that one price. That price becomes the official close.</p>
+    <p>Pooling all end-of-day interest into one moment at one price makes the close harder to distort and easier for a large order to meet.</p>
+
+    <h3><span class="sub">5.1</span> The terms, which are also our data fields</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>Reference price</td><td>Volume-weighted average price between 15:00 and 15:15, the anchor the auction is measured against</td></tr>
+          <tr><td>Lower and upper band</td><td>How far the auction price may move away from the reference price</td></tr>
+          <tr><td>Indicative equilibrium price</td><td>The running estimate of the auction price, published live while the auction is open</td></tr>
+          <tr><td>Final price</td><td>The price the auction settles at, which becomes the official close</td></tr>
+          <tr><td>Final volume</td><td>Shares actually executed in the auction</td></tr>
+          <tr><td>Imbalance</td><td>Quantity left unmatched at the equilibrium price</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="sub">5.2</span> Scope and timing</h3>
+    <ul>
+      <li>Launched 3 August 2026 as a twenty minute session running 3:15 to 3:35 pm.</li>
+      <li>Applies to Category I stocks, those with F&amp;O contracts, currently about 215 names.</li>
+      <li>Indices have no auction of their own. A stock can be auctioned; an index cannot be traded directly. The index close is computed from its constituents, so the auction reaches the index indirectly.</li>
+      <li>From 7 December 2026 the session shortens to ten minutes, 3:30 to 3:40 pm, and expiring derivative contracts settle on the last thirty minute average instead of the auction price.</li>
+    </ul>
+    <div class="callout warn">
+      <p class="lbl">Regime break</p>
+      <p>The rule change on 7 December 2026 falls between our Milestone-2 build and the December submission. Every statistic in this report describes the launch regime, 3 August to 23 October 2026, and must be labelled as such. Figures from the two regimes cannot be pooled.</p>
+    </div>
+  </section>
+
+  <section id="s6">
+    <h2 class="sec"><span class="num">6</span> Normalising four CAS layouts</h2>
+    <p>NSE changed the layout of the daily CAS report repeatedly during its first twelve weeks. The 57 files we hold use four different schemas.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Layout</th><th>Columns</th><th>Files</th><th>Period</th><th>Difference</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="num">12</td><td class="num">5</td><td class="num">03 Aug to 07 Aug</td><td>Launch format, no bid or ask columns</td></tr>
+          <tr><td class="num">2</td><td class="num">17</td><td class="num">15</td><td class="num">10 Aug to 28 Aug</td><td>Bid and ask added, mixed-case headers, CHNG and FINAL QUANTITY</td></tr>
+          <tr><td class="num">3</td><td class="num">17</td><td class="num">36</td><td class="num">31 Aug to 23 Oct</td><td>Same fields renamed to CHANGE and FINAL VOLUME, upper case</td></tr>
+          <tr><td class="num">4</td><td class="num">10</td><td class="num">1</td><td class="num">06 Oct only</td><td>A one-off layout with a TRADE DATE column and no auction detail</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Reading these by column position would corrupt the data silently. The loader instead holds an alias table that maps every spelling NSE has used onto one canonical field name, so <code>CHNG</code> and <code>CHANGE</code> both resolve to the same column, as do <code>FINAL QUANTITY</code> and <code>FINAL VOLUME</code>. A new layout needs a new alias, not new logic.</p>
+    <p>All 57 files pass through that loader into a single table of 11,986 rows covering 215 symbols across 57 trading days, with no row dropped. This is the practical answer to the question of how differently shaped sources are brought together: one canonical schema on the inside, a small adapter for each source layout on the outside.</p>
+    <p>The same approach handles the price data, where investing.com's own column names and conventions differ from the exchange's.</p>
+  </section>
+
+  <section id="s7">
+    <h2 class="sec"><span class="num">7</span> What our CAS data shows</h2>
+
+    <h3><span class="sub">7.1</span> The validation</h3>
+    <p>Joining the auction reports to the daily price data on symbol and date gives 228 matched observations for our four auction-eligible stocks. In every one of them the auction's final price equals the official closing price exactly, with a mean absolute difference of 0.0000. NSE's report and a commercial data provider, with no connection between them, agree completely. This confirms the definition of the session, the accuracy of both sources and the correctness of our loaders.</p>
+
+    <h3><span class="sub">7.2</span> The auction carries real volume</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Symbol</th><th>Days</th><th>Mean deviation</th><th>Mean absolute deviation</th><th>Auction share of daily volume</th></tr></thead>
+        <tbody>
+          <tr><td class="sym">HDFCBANK</td><td class="num">57</td><td class="num">+0.0153%</td><td class="num">0.2376%</td><td class="num">4.64%</td></tr>
+          <tr><td class="sym">ICICIBANK</td><td class="num">57</td><td class="num">+0.0940%</td><td class="num">0.2754%</td><td class="num">5.48%</td></tr>
+          <tr><td class="sym">RELIANCE</td><td class="num">57</td><td class="num">+0.0080%</td><td class="num">0.3394%</td><td class="num">7.53%</td></tr>
+          <tr><td class="sym">TCS</td><td class="num">57</td><td class="num">+0.1291%</td><td class="num">0.3477%</td><td class="num">4.90%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Between roughly one twentieth and one thirteenth of a stock's entire daily volume now trades in those few closing minutes.</p>
+
+    <h3><span class="sub">7.3</span> How far the auction moves price</h3>
+    <p>Across all 11,986 observations the auction price sits a median of 0.25% away from the reference price and a mean of 0.35% away. Half of all auctions move price by more than 0.25%, a fifth by more than 0.5%, and 4.3% by more than 1%. The largest deviation observed is exactly 3.0000%, which suggests a band limit rather than a market outcome and is worth confirming against the circular.</p>
+
+    <h3><span class="sub">7.4</span> A persistent upward bias</h3>
+    <p>Across the whole sample 60.0% of auctions close above their reference price and 37.8% below, with the remainder unchanged. The mean signed deviation is +0.107%. On individual days the share closing above reference runs as high as 88%. Daily auction turnover across the 215 stocks ranges from about 1,270 to 2,240 crore rupees.</p>
+    <div class="callout accent">
+      <p class="lbl">Original observation</p>
+      <p>The closing auction appears to carry a systematic upward bias in its first twelve weeks. We have not found this reported elsewhere. It is a descriptive finding over a short sample and is offered as an observation to investigate, not a conclusion.</p>
+    </div>
+
+    <h3><span class="sub">7.5</span> Fields NSE publishes but does not fill</h3>
+    <p>The indicative equilibrium quantity and both imbalance columns are present in the file headers and empty in every row we hold. The indicative equilibrium price is populated in only 8.7% of rows, almost all from the earliest files. Any analysis depending on imbalance is therefore not currently possible.</p>
+  </section>
+
+  <section id="s8">
+    <h2 class="sec"><span class="num">8</span> The working model</h2>
+    <p>The December system trains no model. Its analytical core is a similarity search, which is deterministic and can be re-run to the same answer by an examiner. It works in five steps.</p>
+    <ul>
+      <li>Every past trading day is reduced to a vector of its indicator values, covering trend, volatility, momentum and activity. This is the day's fingerprint.</li>
+      <li>Each feature is standardised so that volume, measured in millions, cannot overwhelm a momentum reading on a scale of nought to a hundred.</li>
+      <li>The distance between today's vector and every historical day's vector is measured.</li>
+      <li>The closest days are taken and ranked, which is nearest-neighbour retrieval.</li>
+      <li>What happened on the session after each of those days is summarised as a distribution, for example that thirteen of the twenty closest days closed higher the next session.</li>
+    </ul>
+    <p>The result is presented as historical precedent. The system reports what has happened before under similar conditions and never advises an action, which keeps it clear of SEBI's Research Analyst framework.</p>
+    <p>Forecasting belongs to the phase after December. It will use a supervised classifier producing calibrated probabilities, validated by walk-forward testing on history and then by recording predictions on live data without placing any trade. No neural network is involved, because the sample is small and every output has to be explainable.</p>
+  </section>
+
+  <section id="s9">
+    <h2 class="sec"><span class="num">9</span> What the December version delivers</h2>
+    <p>A secured web application in which a user logs in and, for the six tracked instruments, can do the following.</p>
+    <ul>
+      <li>See the current state of an instrument, covering trend, volatility, momentum and activity, with a plain-language reading.</li>
+      <li>Inspect the indicators behind that reading, each explained.</li>
+      <li>Retrieve historically similar sessions and see what followed them.</li>
+      <li>Examine the closing auction for the four auction-eligible stocks, and a market-wide auction pressure view built from all 215.</li>
+      <li>Keep a personal watchlist visible only to that account.</li>
+    </ul>
+    <p>The system places no orders, connects to no broker and issues no recommendation.</p>
+  </section>
+
+  <section id="s10">
+    <h2 class="sec"><span class="num">10</span> Implementation architecture</h2>
+    <p>The design computes analysis ahead of time and serves stored results, so the application reads rather than calculates while a user waits.</p>
+<pre><code>CSV sources
+   |  ingestion: hash each file (SHA-256), record in ingestion_log
+   v
+Python analysis: indicators, day vectors, similar days, CAS joins
+   v
+MongoDB    prices · indicators · similar_days · cas · cas_market
+           users · watchlists · ingestion_log
+   v
+Express API    authentication, roles, ownership, validation, rate limiting
+   v
+React dashboard    overview · indicators · similar days · CAS</code></pre>
+
+    <h3><span class="sub">10.1</span> Collections</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Collection</th><th>Key</th><th>Holds</th></tr></thead>
+        <tbody>
+          <tr><td class="sym">prices</td><td>symbol, date</td><td>Open, high, low, close, volume</td></tr>
+          <tr><td class="sym">indicators</td><td>symbol, date</td><td>Computed trend, volatility, momentum, activity</td></tr>
+          <tr><td class="sym">similar_days</td><td>symbol, date</td><td>Ranked neighbours and their following-day outcomes</td></tr>
+          <tr><td class="sym">cas</td><td>symbol, date</td><td>Auction fields and the deviation from reference</td></tr>
+          <tr><td class="sym">cas_market</td><td>date</td><td>Market-wide auction pressure across 215 stocks</td></tr>
+          <tr><td class="sym">users</td><td>id</td><td>Credentials and role</td></tr>
+          <tr><td class="sym">watchlists</td><td>user id</td><td>Per-user instruments, protected by ownership checks</td></tr>
+          <tr><td class="sym">ingestion_log</td><td>id</td><td>Source, time, file hash, row counts</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="sub">10.2</span> API</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Endpoint</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td class="sym">GET /instruments</td><td>The tracked instruments</td></tr>
+          <tr><td class="sym">GET /instruments/:sym/overview</td><td>Latest state with its explanation</td></tr>
+          <tr><td class="sym">GET /instruments/:sym/indicators</td><td>Indicator series for the recent window</td></tr>
+          <tr><td class="sym">GET /instruments/:sym/similar-days</td><td>Ranked analogues and outcome distribution</td></tr>
+          <tr><td class="sym">GET /instruments/:sym/cas</td><td>That stock's auction history, or a clear not-applicable response for an index</td></tr>
+          <tr><td class="sym">GET /market/cas</td><td>Market-wide auction pressure series</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="sub">10.3</span> Security and integrity</h3>
+    <p>Every protected route requires authentication and checks the caller's role, and anything belonging to a user is additionally checked for ownership. Inputs are validated and traffic is rate limited. On the data side, every ingested file is hashed and recorded before it is read, so any figure on screen can be traced back to a known file. The quality report already produced for the daily data carries the source hash and is the first working piece of that chain.</p>
+  </section>
+
+  <section id="s11">
+    <h2 class="sec"><span class="num">11</span> Build sequence</h2>
+    <p>The data work is complete. What remains is ordinary application engineering, sequenced so that one instrument works through every layer before the system is widened.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Step</th><th>Deliverable</th><th>Done when</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Load the cleaned CSVs into MongoDB with hashing and the ingestion log</td><td>One instrument's history is queryable and its ingestion is logged</td></tr>
+          <tr><td class="num">2</td><td>Compute indicators and write them back</td><td>Indicator values can be read from the store</td></tr>
+          <tr><td class="num">3</td><td>One API route over that collection</td><td>The route returns correct JSON</td></tr>
+          <tr><td class="num">4</td><td>One dashboard view calling that route</td><td>The instrument's state is visible in the browser</td></tr>
+          <tr><td class="num">5</td><td>Authentication, roles, validation, rate limiting</td><td>An unauthenticated request is refused and a valid one succeeds</td></tr>
+          <tr><td class="num">6</td><td>Remaining instruments, similar days, both CAS views</td><td>All four views work for every instrument</td></tr>
+          <tr><td class="num">7</td><td>Explanations, tests, demo preparation</td><td>Every figure is explained and the security tests pass</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Steps one to four form a single working slice through the whole stack. Reaching it early is what makes the remaining work predictable.</p>
+  </section>
+
+  <section id="s12">
+    <h2 class="sec"><span class="num">12</span> Limitations and risks</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Limitation</th><th>Consequence</th><th>Response</th></tr></thead>
+        <tbody>
+          <tr><td>CAS history is 57 trading days</td><td>Enough for description, not for modelling over time</td><td>Report cross-sectional statistics across 215 stocks, which gives roughly 12,000 observations, and make no time-series claim</td></tr>
+          <tr><td>Rules change on 7 December 2026</td><td>Statistics from the two regimes are not comparable</td><td>Label every figure by regime and keep them separate</td></tr>
+          <tr><td>Indices have no auction</td><td>No CAS view is possible for NIFTY or BANK NIFTY</td><td>State this in the interface and provide the market-wide aggregate instead</td></tr>
+          <tr><td>Daily volume held for six symbols only</td><td>Auction share of volume is computable for four stocks, not all 215</td><td>Pull exchange daily reports for the auction period if the measure is needed market-wide</td></tr>
+          <tr><td>Imbalance fields are unpopulated</td><td>Order imbalance cannot be studied</td><td>Excluded from scope and recorded here</td></tr>
+          <tr><td>Adjustment conventions differ between providers</td><td>Stock history cannot be combined across sources</td><td>One provider per stock across the whole series</td></tr>
+          <tr><td>Daily data only, no intraday yet</td><td>Within-day behaviour is not yet observable</td><td>Minute data is available from 2022 and is scheduled after the December build</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Data and implementation report · Capstone · 27 October 2026 · figures describe the CAS launch regime, 3 August to 23 October 2026
+  </footer>
+
+</div>

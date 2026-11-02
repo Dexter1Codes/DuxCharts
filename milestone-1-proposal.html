@@ -1,0 +1,513 @@
+<title>Milestone-1 Proposal</title>
+<style>
+  /* Layout: formal proposal — numbered sections, contents rail, requirement + risk tables; matches the Capstone Brief type/palette. */
+  :root {
+    color-scheme: light;
+    --bg:        #f6f5f1;
+    --surface:   #fffefb;
+    --surface-2: #faf8f2;
+    --ink:       #1b1f23;
+    --ink-soft:  #4c555d;
+    --ink-faint: #818d96;
+    --line:      #e2ddd2;
+    --line-soft: #ece8df;
+    --accent:    #0b7a63;
+    --accent-sb: #e3f0ec;
+    --warn:      #a8631b;
+    --warn-sb:   #f6ece0;
+    --radius: 10px;
+    --maxw: 820px;
+    --font-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
+      --bg:#14171a; --surface:#1c2024; --surface-2:#1f2429; --ink:#e9e7e0;
+      --ink-soft:#b2b7bb; --ink-faint:#7d868d; --line:#2d333a; --line-soft:#242a30;
+      --accent:#4fc0a4; --accent-sb:#16302a; --warn:#d79a54; --warn-sb:#33281a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:#14171a; --surface:#1c2024; --surface-2:#1f2429; --ink:#e9e7e0;
+    --ink-soft:#b2b7bb; --ink-faint:#7d868d; --line:#2d333a; --line-soft:#242a30;
+    --accent:#4fc0a4; --accent-sb:#16302a; --warn:#d79a54; --warn-sb:#33281a;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 15.5px; line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-block: 48px 72px; padding-inline: 20px; }
+
+  /* cover */
+  .cover { border-bottom: 2px solid var(--ink); padding-bottom: 26px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin: 0;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(27px, 5.2vw, 40px); line-height: 1.08; letter-spacing: -0.01em;
+    text-wrap: balance; margin: 13px 0 0;
+  }
+  .subtitle { color: var(--ink-soft); font-size: 16px; margin: 10px 0 0; }
+  .cover-meta {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2px 20px; margin-top: 24px;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  }
+  .cm {
+    padding: 11px 14px; background: var(--surface);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .cm .k { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); }
+  .cm .v { font-size: 14px; margin-top: 3px; }
+  .fill { color: var(--warn); border-bottom: 1px dashed var(--warn); font-style: italic; }
+
+  /* contents */
+  .toc { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin-top: 26px; }
+  .toc h2 { font-family: var(--font-body); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 12px; border: none; padding: 0; }
+  .toc ol { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 28px; }
+  @media (max-width: 540px){ .toc ol { columns: 1; } }
+  .toc li { font-size: 13.5px; margin-bottom: 7px; break-inside: avoid; }
+  .toc a { color: var(--ink-soft); text-decoration: none; display: flex; gap: 8px; }
+  .toc a:hover { color: var(--accent); }
+  .toc .n { font-family: var(--font-mono); color: var(--accent); font-size: 12px; min-width: 20px; }
+
+  /* sections */
+  section { margin-top: 44px; scroll-margin-top: 16px; }
+  h2.sec {
+    font-family: var(--font-display); font-weight: 600; font-size: 21px;
+    letter-spacing: -0.01em; margin: 0 0 16px; padding-bottom: 9px;
+    border-bottom: 1px solid var(--line); display: flex; gap: 12px; align-items: baseline;
+    text-wrap: balance;
+  }
+  h2.sec .num { font-family: var(--font-mono); font-size: 14px; color: var(--accent); }
+  h3 { font-family: var(--font-body); font-weight: 650; font-size: 15.5px; margin: 22px 0 8px; }
+  h3 .sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); font-weight: 500; letter-spacing: 0.05em; margin-right: 8px; }
+  p { margin: 0 0 13px; max-width: 72ch; }
+  strong { font-weight: 650; }
+  a { color: var(--accent); }
+  .lead { font-size: 16px; color: var(--ink-soft); }
+
+  ul { margin: 0 0 14px; padding-left: 0; list-style: none; }
+  ul li { position: relative; padding-left: 20px; margin-bottom: 7px; color: var(--ink-soft); max-width: 72ch; }
+  ul li::before { content: ""; position: absolute; left: 3px; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  ul li strong { color: var(--ink); }
+
+  /* callouts */
+  .callout { border-radius: var(--radius); padding: 15px 18px; margin: 16px 0; border: 1px solid; }
+  .callout.accent { background: var(--accent-sb); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+  .callout.warn { background: var(--warn-sb); border-color: color-mix(in srgb, var(--warn) 32%, transparent); }
+  .callout .lbl { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; margin: 0 0 6px; }
+  .callout.accent .lbl { color: var(--accent); }
+  .callout.warn .lbl { color: var(--warn); }
+  .callout p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+
+  /* tables */
+  .table-scroll { overflow-x: auto; margin: 14px 0; border: 1px solid var(--line); border-radius: var(--radius); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 520px; }
+  th, td { text-align: left; padding: 10px 13px; vertical-align: top; border-bottom: 1px solid var(--line-soft); }
+  th { background: var(--surface-2); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.id { font-family: var(--font-mono); font-size: 12px; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .pill { display: inline-block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+  .pill.dec { background: var(--accent-sb); color: var(--accent); }
+  .pill.later { background: var(--line-soft); color: var(--ink-faint); }
+
+  /* architecture flow */
+  .flow { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .flow-row { display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; }
+  .node { flex: 1; min-width: 150px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
+  .node.sec-layer { border-style: dashed; border-color: var(--accent); }
+  .node .nk { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+  .node .nt { font-weight: 650; font-size: 14px; margin: 4px 0 2px; }
+  .node .nd { font-size: 12.5px; color: var(--ink-faint); line-height: 1.4; }
+  .flow-arrow { text-align: center; color: var(--ink-faint); font-size: 12px; font-family: var(--font-mono); }
+
+  /* milestone timeline */
+  .milestones { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 10px; margin: 14px 0; }
+  .ms { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 13px 15px; }
+  .ms.now { border-left: 3px solid var(--accent); }
+  .ms .d { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .ms .t { font-weight: 650; font-size: 13.5px; margin: 5px 0 2px; }
+  .ms .m { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); }
+  .ms .s { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
+
+  /* references */
+  ol.refs { counter-reset: r; list-style: none; padding: 0; margin: 0; }
+  ol.refs li { counter-increment: r; position: relative; padding-left: 34px; margin-bottom: 11px; font-size: 13.5px; color: var(--ink-soft); max-width: 74ch; }
+  ol.refs li::before { content: "[" counter(r) "]"; position: absolute; left: 0; top: 0; font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+
+  footer { margin-top: 52px; padding-top: 18px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); letter-spacing: 0.02em; }
+  a:focus-visible, .toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;650&family=IBM+Plex+Serif:wght@500;600&display=swap">
+
+<div class="wrap">
+
+  <div class="cover">
+    <p class="eyebrow">Capstone · Milestone-1 · Proposal, Requirements and Feasibility</p>
+    <h1>AI-Driven Intraday Market Intelligence and Decision Support for the Indian Equity Market</h1>
+    <p class="subtitle">An educational platform for NIFTY, BANK NIFTY and selected stocks: it describes market behaviour, compares each day with similar past sessions, and studies the new Closing Auction Session, with an explanation for every figure. For research and simulation only.</p>
+    <div class="cover-meta">
+      <div class="cm"><div class="k">Milestone</div><div class="v">M-1 · 30 marks · Group assessment</div></div>
+      <div class="cm"><div class="k">Official deadline</div><div class="v">18 October 2026</div></div>
+      <div class="cm"><div class="k">Team</div><div class="v">Dhairya Upadhyay, Aayush Ranjan, Mridul Kumar</div></div>
+      <div class="cm"><div class="k">Guide</div><div class="v">Dr. Vaibhav Tiwari</div></div>
+      <div class="cm"><div class="k">Institution</div><div class="v">Bennett University</div></div>
+      <div class="cm"><div class="k">Submitted</div><div class="v">16 October 2026</div></div>
+    </div>
+  </div>
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s1"><span class="n">1</span> Abstract</a></li>
+      <li><a href="#s2"><span class="n">2</span> Problem statement and motivation</a></li>
+      <li><a href="#s3"><span class="n">3</span> Objectives</a></li>
+      <li><a href="#s4"><span class="n">4</span> SDG alignment and rationale</a></li>
+      <li><a href="#s5"><span class="n">5</span> Background and context</a></li>
+      <li><a href="#s6"><span class="n">6</span> Existing solutions and gap analysis</a></li>
+      <li><a href="#s7"><span class="n">7</span> Stakeholders and users</a></li>
+      <li><a href="#s8"><span class="n">8</span> Requirements</a></li>
+      <li><a href="#s9"><span class="n">9</span> Proposed solution and methodology</a></li>
+      <li><a href="#s10"><span class="n">10</span> Technology selection and justification</a></li>
+      <li><a href="#s11"><span class="n">11</span> Scope and limitations</a></li>
+      <li><a href="#s12"><span class="n">12</span> Feasibility</a></li>
+      <li><a href="#s13"><span class="n">13</span> Risk analysis and mitigation</a></li>
+      <li><a href="#s14"><span class="n">14</span> Validation, testing and expected outcomes</a></li>
+      <li><a href="#s15"><span class="n">15</span> Timeline and milestones</a></li>
+      <li><a href="#s16"><span class="n">16</span> Team and responsibilities</a></li>
+      <li><a href="#s17"><span class="n">17</span> References</a></li>
+    </ol>
+  </nav>
+
+  <section id="s1">
+    <h2 class="sec"><span class="num">1</span> Abstract</h2>
+    <p class="lead">Intraday traders in Indian markets act on fast-moving, noisy information. Most retail tools either hand out buy and sell signals with no reasoning or stop at raw charts. This project is an educational platform for NIFTY, BANK NIFTY and a few stocks that describes the current state of the market through trend, volatility, momentum and activity, compares the day against similar sessions from the past, and studies the Closing Auction Session that the National Stock Exchange recently introduced. Every figure comes with a plain-language explanation.</p>
+    <p>The platform is for research and study. It places no real orders, promises no returns, and gives no public buy or sell advice, which keeps it outside SEBI's Research Analyst rules. It also carries a security and data-integrity layer: role-based login, ownership checks, rate limiting, input validation, a hash of every ingested file, and an audit log of each ingestion. Because of that layer, every result on screen can be traced back to a verified source file. The sections below set out the problem, the requirements, the feasibility, and the plan for a working version by 30 November 2026.</p>
+  </section>
+
+  <section id="s2">
+    <h2 class="sec"><span class="num">2</span> Problem statement and motivation</h2>
+    <p>Intraday decision-making in the Indian equity market is hard for a few recurring reasons:</p>
+    <ul>
+      <li>Most retail tools show indicators or fire alerts, but rarely explain why the market looks the way it does today, so a trader cannot tell whether a signal suits current conditions.</li>
+      <li>Traders often ask whether they have seen a day like this one before, yet have no systematic way to find and compare similar past sessions and what followed them.</li>
+      <li>The Closing Auction Session changes how the closing price is set at the end of the day, and there is little accessible tooling to study how it behaves and how it relates to the regular session.</li>
+    </ul>
+    <p>There is also the question of trusting the data. A conclusion is only as good as the file it was computed from, and most student and retail tools keep no record of what was ingested or whether it changed.</p>
+    <div class="callout accent">
+      <p class="lbl">The gap this project fills</p>
+      <p>One platform that describes the state of the market, retrieves similar days from history, studies the Closing Auction Session, and (after December) forecasts short-term moves and simulates strategies, all on data whose origin can be verified, and all for learning rather than advice.</p>
+    </div>
+  </section>
+
+  <section id="s3">
+    <h2 class="sec"><span class="num">3</span> Objectives</h2>
+    <p>The project was approved at Milestone-0 with the objectives below. The ones marked MVP are due at Milestone-2 on 30 November. The ones marked post-Dec are planned for the January to March phase before the final panel.</p>
+    <ul>
+      <li><span class="pill dec">MVP</span> &nbsp;Describe the market: compute and show trend, volatility, momentum and activity for the chosen instruments.</li>
+      <li><span class="pill dec">MVP</span> &nbsp;Compare with history: find the past sessions most like the current one.</li>
+      <li><span class="pill dec">MVP</span> &nbsp;Study the Closing Auction Session and how it relates to the regular close.</li>
+      <li><span class="pill dec">MVP</span> &nbsp;Explain every output in plain language.</li>
+      <li><span class="pill dec">MVP</span> &nbsp;Protect the data and control access, with verified and audited ingestion.</li>
+      <li><span class="pill later">post-Dec</span> &nbsp;Forecast short-term moves as calibrated probabilities, never as advice.</li>
+      <li><span class="pill later">post-Dec</span> &nbsp;Evaluate strategies by simulating trades on historical data and measuring the result.</li>
+    </ul>
+  </section>
+
+  <section id="s4">
+    <h2 class="sec"><span class="num">4</span> SDG alignment and rationale</h2>
+    <p>The project maps most directly to <strong>SDG 4, Quality Education</strong>. It is built to teach rather than to advise. A user learns to read trend, volatility, momentum and activity, sees similar days from the past, and reads a plain explanation of each figure. Financial literacy in India is low, and most retail tools give signals without teaching anyone the reasoning, so a tool whose main output is understanding fits this goal well.</p>
+    <p>A second link is to <strong>SDG 8, Decent Work and Economic Growth</strong>, and in particular target 8.10 on access to financial services and markets. Retail investors who understand how the market behaves take part on more even terms with larger institutions, which supports fairer participation.</p>
+    <p>The work on the Closing Auction Session also touches <strong>SDG 9, target 9.5</strong>, which calls for stronger research capacity, since the session is new and little studied and the project adds careful measurement of how it behaves.</p>
+  </section>
+
+  <section id="s5">
+    <h2 class="sec"><span class="num">5</span> Background and context</h2>
+    <p>The National Stock Exchange is the main venue for equity trading in India, and the NIFTY 50 and BANK NIFTY indices are its most-watched benchmarks. Retail participation has grown sharply in recent years, and intraday trading, where positions open and close within the same day, is popular among active traders. Many of them rely on technical analysis, which reads price and volume to judge trend, volatility and momentum.</p>
+    <p>The NSE recently introduced a Closing Auction Session, a short call-auction window at the end of the day in which orders are collected and a single closing price is discovered. Call auctions at the close are already used by exchanges such as the NYSE and the London Stock Exchange, because they make the closing price steadier and harder to distort, which matters for index funds and large orders that must execute at the close. Because the session is new in India, there is little tooling and little published study of how it behaves.</p>
+    <p>Market advice in India is regulated. SEBI's Research Analyst framework governs anyone who publishes buy or sell recommendations, which is why this project is built to explain and simulate rather than to advise.</p>
+  </section>
+
+  <section id="s6">
+    <h2 class="sec"><span class="num">6</span> Existing solutions and gap analysis</h2>
+    <p>Several kinds of tools already serve parts of this space. The table compares them against what this project needs.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Tool or category</th><th>What it does well</th><th>What it lacks here</th></tr></thead>
+        <tbody>
+          <tr><td>Charting and screeners (TradingView, Chartink)</td><td>Strong charts, indicators and custom screens</td><td>Gives indicators and signals with little explanation; no historical-analogue search; much community content is advisory</td></tr>
+          <tr><td>Broker apps (Zerodha Kite, Upstox)</td><td>Order placement, live quotes, basic charts</td><td>Built for trading, not teaching; no "days like today"; no CAS analysis; no data-integrity record</td></tr>
+          <tr><td>Fundamental screeners (screener.in, Tickertape)</td><td>Company fundamentals and filters</td><td>About company value, not intraday price behaviour or the CAS</td></tr>
+          <tr><td>Professional terminals (Bloomberg, Refinitiv)</td><td>Deep data and analytics</td><td>Costly and aimed at institutions; closed; not an educational tool</td></tr>
+          <tr><td>Academic methods (indicators, analog and regime methods)</td><td>Well-established techniques and evaluation</td><td>Not packaged as an explainable, integrity-checked tool for the Indian market or the new CAS</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The gap is clear. No accessible tool brings together explained descriptive analysis, retrieval of similar past days, analysis of the Closing Auction Session, and data whose origin can be verified, while staying educational and giving no advice. The CAS in particular has almost no tooling because it is recent. That combination is what this project builds.</p>
+  </section>
+
+  <section id="s7">
+    <h2 class="sec"><span class="num">7</span> Stakeholders and users</h2>
+    <ul>
+      <li>Retail intraday traders and active investors in Indian markets, the primary users, who want to understand market behaviour before they act.</li>
+      <li>Students and other learners building market literacy, who benefit from the explanations attached to every output.</li>
+      <li>The project team and the academic guide, who set and assess the work.</li>
+      <li>The research community interested in how the Closing Auction Session behaves, since published study of it is thin.</li>
+      <li>The wider aim of investor protection that SEBI's rules reflect. The no-advice design keeps the tool in line with that aim.</li>
+    </ul>
+  </section>
+
+  <section id="s8">
+    <h2 class="sec"><span class="num">8</span> Requirements</h2>
+
+    <h3><span class="sub">8.1</span> User requirements</h3>
+    <ul>
+      <li>See the current state of an instrument at a glance.</li>
+      <li>Read each figure in plain language, without needing finance jargon.</li>
+      <li>Compare the current day with similar days from the past, and see what followed them.</li>
+      <li>See how the closing auction behaved and whether it was unusual.</li>
+      <li>Trust that the numbers come from genuine, unaltered data.</li>
+      <li>Reach only the data that the account is allowed to see.</li>
+    </ul>
+
+    <h3><span class="sub">8.2</span> Functional requirements</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Requirement</th><th>Phase</th></tr></thead>
+        <tbody>
+          <tr><td class="id">FR-1</td><td>Ingest historical and daily OHLCV data for NIFTY, BANK NIFTY and the selected stocks.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-2</td><td>Ingest and store Closing Auction Session data where available.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-3</td><td>Compute a cryptographic hash of every ingested file and record each ingestion event in an audit log (source, time, hash, row counts).</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-4</td><td>Compute trend, volatility, momentum and activity indicators and persist the results.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-5</td><td>Given a session, retrieve the historically most similar days ("days like today").</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-6</td><td>Compute CAS statistics such as the deviation of the auction close from the regular close and the auction's share of volume.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-7</td><td>Expose all analysis through a documented REST API.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-8</td><td>Present the dashboard views (market overview, indicators, similar days, CAS), each with a plain-language explanation.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-9</td><td>Authenticate users and assign roles such as viewer, analyst and admin.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-10</td><td>Enforce ownership and authorisation checks on protected resources.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-11</td><td>Rate-limit and validate all API inputs.</td><td><span class="pill dec">MVP</span></td></tr>
+          <tr><td class="id">FR-12</td><td>Produce a probabilistic short-term forecast with an explanation.</td><td><span class="pill later">post-Dec</span></td></tr>
+          <tr><td class="id">FR-13</td><td>Backtest strategies with simulated trades and report measurable performance.</td><td><span class="pill later">post-Dec</span></td></tr>
+          <tr><td class="id">FR-14</td><td>Keep an event calendar and flag sessions near high-impact events (Budget, RBI policy, expiry, results) as context, widening the stated uncertainty.</td><td><span class="pill later">post-Dec</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="sub">8.3</span> Non-functional requirements</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Quality</th><th>Requirement</th></tr></thead>
+        <tbody>
+          <tr><td class="id">NFR-1</td><td>Security</td><td>Protected endpoints require authentication; actions are authorised by role and ownership; inputs are validated; abusive traffic is rate-limited.</td></tr>
+          <tr><td class="id">NFR-2</td><td>Data integrity</td><td>No analysis runs on unverified data. The ingestion hash and audit log make every result traceable to a known source file.</td></tr>
+          <tr><td class="id">NFR-3</td><td>Reproducibility</td><td>Analysis on fixed historical data is deterministic and repeatable, so results can be re-verified during assessment.</td></tr>
+          <tr><td class="id">NFR-4</td><td>Usability</td><td>Outputs are explained in plain language and readable without a finance glossary.</td></tr>
+          <tr><td class="id">NFR-5</td><td>Performance</td><td>Dashboard views load from pre-computed, stored results, so common requests return quickly instead of recomputing on demand.</td></tr>
+          <tr><td class="id">NFR-6</td><td>Maintainability</td><td>The data and API contract (collection shapes and API spec) is documented and versioned so the parts of the system stay decoupled.</td></tr>
+          <tr><td class="id">NFR-7</td><td>Compliance</td><td>No feature emits public buy or sell advice; the system stays within an educational and research purpose.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="s9">
+    <h2 class="sec"><span class="num">9</span> Proposed solution and methodology</h2>
+    <p>The system is a pipeline in layers. The data and analysis layers run in Python and write to MongoDB. The API and the dashboard read from MongoDB and present the results. A security and integrity layer wraps the server side. The two halves are kept apart by two agreed interfaces, the MongoDB document shapes and the REST API contract, so the data work and the application work can go on in parallel.</p>
+    <div class="flow">
+      <div class="flow-row">
+        <div class="node"><div class="nk">Layer 1 · Data</div><div class="nt">Ingestion and cleaning</div><div class="nd">Python jobs read historical, daily and CAS data, clean it, and store records in MongoDB.</div></div>
+        <div class="node"><div class="nk">Layer 2 · Analysis</div><div class="nt">Indicators and comparison</div><div class="nd">Trend, volatility, momentum and activity, the "days like today" search, and CAS statistics, written back to MongoDB as results.</div></div>
+      </div>
+      <div class="flow-arrow">the layers below read from the store</div>
+      <div class="flow-row">
+        <div class="node"><div class="nk">Layer 3 · API</div><div class="nt">Node.js and Express</div><div class="nd">REST endpoints over MongoDB that serve the stored results to clients.</div></div>
+        <div class="node"><div class="nk">Layer 4 · Presentation</div><div class="nt">React dashboard</div><div class="nd">Market overview, indicators, similar days and CAS, each shown with an explanation.</div></div>
+      </div>
+      <div class="flow-arrow">security and integrity wrap the server-side layers</div>
+      <div class="flow-row">
+        <div class="node sec-layer"><div class="nk">Cross-cutting · Security and integrity</div><div class="nt">Auth, roles, ownership, rate limiting, input validation, plus file hashing and an ingestion audit log</div><div class="nd">Every protected request is checked for identity and permission, and every ingested file is hashed and logged, so each figure traces back to a verified source file.</div></div>
+      </div>
+    </div>
+
+    <h3><span class="sub">9.1</span> External context and event awareness</h3>
+    <p>The core analysis reads price and volume only. Markets also move on outside events such as the Union Budget, RBI policy decisions, regulatory changes, earnings and global cues, which a price-only view cannot see coming. The platform does not try to predict these events, because they are rare, hard to quantify and easy to overfit. Instead it keeps a calendar of known high-impact dates (Budget day, RBI policy dates, derivatives expiry, results dates) and flags when a session sits near one, then widens the stated uncertainty and adds a caveat, for example that volatility around RBI policy is usually higher and the model's edge is lower. This gives the user context about what is happening outside the chart. News and macro-feature analysis is left for later work.</p>
+
+    <h3><span class="sub">9.2</span> Methodology</h3>
+    <p>Development is iterative and planned around outcomes. Work is cut into pieces small enough to finish and check in a day, each with a clear definition of done: working, tested where it matters, and committed. Interfaces come first. The team settles the MongoDB document shapes and the API contract before heavy building, so the data side and the application side can move in parallel and meet in the middle. Each milestone ends in a running, demonstrable state.</p>
+  </section>
+
+  <section id="s10">
+    <h2 class="sec"><span class="num">10</span> Technology selection and justification</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Choice</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Python (pandas, NumPy, scikit-learn)</td><td>The standard language for time-series data work. pandas and NumPy handle price tables well, and scikit-learn provides the similarity search now and the forecasting model later.</td></tr>
+          <tr><td>MongoDB</td><td>Market records and analysis results vary in shape, since indicators and CAS fields differ by instrument. A document store holds these without a rigid schema, and fast reads suit a dashboard that serves pre-computed results.</td></tr>
+          <tr><td>Node.js and Express</td><td>One language, JavaScript, across the API and the frontend. Its middleware ecosystem covers authentication, validation and rate limiting, which the security layer needs.</td></tr>
+          <tr><td>React</td><td>A component model fits a dashboard of repeated cards and views. It is widely used, so help is easy to find, and learning it is one of the developer's goals.</td></tr>
+          <tr><td>Security building blocks (JWT, a validation library, a rate limiter, SHA-256 hashing)</td><td>Standard, well-understood pieces for login, input checking, abuse control and file integrity, rather than home-grown versions.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="s11">
+    <h2 class="sec"><span class="num">11</span> Scope and limitations</h2>
+    <h3><span class="sub">11.1</span> In scope</h3>
+    <ul>
+      <li>Instruments: the NIFTY 50 index, the BANK NIFTY index, and a small set of liquid stocks, with the final list fixed with the guide.</li>
+      <li>Historical and daily end-of-day data, including Closing Auction Session data where it is available.</li>
+      <li>Descriptive analysis, comparison with similar past days, CAS statistics, and explained decision support.</li>
+      <li>A secured REST API and an interactive web dashboard.</li>
+      <li>Probabilistic forecasting and strategy backtesting in the phase after December.</li>
+    </ul>
+    <h3><span class="sub">11.2</span> MVP scope for 30 November 2026</h3>
+    <ul>
+      <li>A Python ingestion pipeline that writes cleaned data to MongoDB, with file hashing and an ingestion audit log.</li>
+      <li>Indicator computation (trend, volatility, momentum, activity) and a simple "days like today" comparison, with results stored in MongoDB.</li>
+      <li>CAS statistics over the available data.</li>
+      <li>A Node.js and Express REST API over MongoDB.</li>
+      <li>A React dashboard with four views: market overview, indicators, similar historical days, and CAS.</li>
+      <li>The security layer: login with roles, ownership checks, rate limiting, input validation, ingestion hashing and the audit log.</li>
+    </ul>
+    <h3><span class="sub">11.3</span> Instruments and data granularity</h3>
+    <ul>
+      <li>The project uses NSE instruments only: the NIFTY 50 and BANK NIFTY indices and a few liquid NSE stocks such as RELIANCE, HDFCBANK, INFY and TCS, with the final list fixed with the guide. SENSEX and other BSE instruments are left out so the Closing Auction Session analysis stays consistent, since the CAS is an NSE mechanism.</li>
+      <li>The pipeline treats the instrument as a data field rather than hard-coded logic, so adding indices or stocks later, for example NIFTY 150 or 500, is a matter of configuration. The validated set is kept small on purpose, and wider coverage is future work the design already allows.</li>
+      <li>Each stock runs through the same steps as an index: its own cleaned history, its own indicators, and a "days like today" search within its own past. Later forecasting uses one model per instrument, since each symbol behaves differently, with a pooled model as a scaling option. CAS data is recorded per security, so stock-level CAS analysis is a normal case.</li>
+    </ul>
+    <h3><span class="sub">11.4</span> Limitations</h3>
+    <ul>
+      <li>The December version describes and compares; it does not forecast. Forecasting arrives in the next phase.</li>
+      <li>CAS analysis is bounded by how much CAS data exists, which is small because the session is new.</li>
+      <li>The MVP uses end-of-day data, so it does not yet capture moves within the trading day. Minute-level intraday data is a later extension, once its cost and availability are confirmed.</li>
+      <li>The validated set is a few instruments, not the whole market.</li>
+      <li>Explanations are generated from templates over the computed numbers, so they are accurate but not conversational.</li>
+    </ul>
+    <div class="callout warn">
+      <p class="lbl">Regulatory guardrail</p>
+      <p>Publishing buy or sell recommendations in India falls under SEBI's Research Analyst framework. The platform explains behaviour and simulates strategies for study, and never tells a user to trade. This rule is part of the requirements (NFR-7) and shapes the design.</p>
+    </div>
+  </section>
+
+  <section id="s12">
+    <h2 class="sec"><span class="num">12</span> Feasibility</h2>
+
+    <h3><span class="sub">12.1</span> Technical</h3>
+    <p>The stack is standard and the techniques are known. Python with pandas and NumPy handles the data and analysis, MongoDB stores it, Node.js with Express serves the API, and React builds the dashboard. The indicators (moving-average trend, range-based volatility, momentum oscillators, volume) and the similarity search behind "days like today" are standard computations. Historical price and volume data for the chosen instruments is easy to obtain. The one real unknown is how much CAS data is available, which is tracked as a risk in section 13. On balance the build is achievable.</p>
+
+    <h3><span class="sub">12.2</span> Economic</h3>
+    <p>The stack is open source and runs on the computers the team already has and on free service tiers. Data for the selected instruments costs little or nothing. The project needs no capital budget.</p>
+
+    <h3><span class="sub">12.3</span> Operational</h3>
+    <p>The work is divided by skill. Two Data Science members own the data and the analysis and write their results to MongoDB; the developer owns the API, the dashboard and the security layer. Each person works to daily deliverables with a clear finish, and the two interfaces, the MongoDB document shapes and the API contract, are agreed early so neither side waits on the other. With disciplined scope this is workable.</p>
+
+    <h3><span class="sub">12.4</span> Schedule</h3>
+    <p>The scope for 30 November is deliberately limited. Forecasting and backtesting are held back to the phase after December, which leaves the data pipeline, descriptive analysis, CAS statistics, API, dashboard and security layer for the current build. About seven weeks remain to Milestone-2, with room to absorb delays.</p>
+
+    <h3><span class="sub">12.5</span> Legal and ethical</h3>
+    <p>Because the platform teaches and never gives public buy or sell advice, it stays outside SEBI's Research Analyst registration. Data is used for study, not resold, with sources acknowledged. The educational purpose and the explanations also address the ethical risk of a tool that could otherwise be read as investment advice.</p>
+
+    <h3><span class="sub">12.6</span> Opportunity</h3>
+    <p>The Closing Auction Session is new and little studied, so even simple, careful statistics about it add something the current tools do not offer. The explainable, integrity-checked approach also carries over to other instruments and markets later, which gives the project room to grow after the capstone.</p>
+  </section>
+
+  <section id="s13">
+    <h2 class="sec"><span class="num">13</span> Risk analysis and mitigation</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>CAS data is scarce or incomplete because the session is new.</td><td>Med</td><td>Scope CAS analysis to what the available NSE data supports, and treat richer analysis as a stretch for the phase after December.</td></tr>
+          <tr><td>Team bandwidth is limited (about 5 to 6 hours a week per data member).</td><td>Med</td><td>Bounded scope, early agreement on interfaces, and parallel workstreams so no one blocks another.</td></tr>
+          <tr><td>Learning curve on React, Node and MongoDB for the developer.</td><td>Med</td><td>Build incrementally with explained decisions, use the planning process, and keep the MVP small.</td></tr>
+          <tr><td>Data cleaning is underestimated.</td><td>Med</td><td>Start ingestion early and enforce integrity checks so bad data is caught at the door, not during analysis.</td></tr>
+          <tr><td>Scope creep into forecasting or backtesting before the MVP is stable.</td><td>High</td><td>Keep FR-12 and FR-13 in the phase after December, behind a working, validated MVP.</td></tr>
+          <tr><td>Overfitting in the later forecasting model.</td><td>Med</td><td>Out of Milestone-2 scope. Evaluate on held-out historical data with calibration metrics when it is built.</td></tr>
+          <tr><td>Outside shocks (Budget, policy, regulation) that a price-only model cannot foresee.</td><td>Med</td><td>The event-awareness overlay flags and caveats predictions near known events. News and macro features are future work, not promised now.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="s14">
+    <h2 class="sec"><span class="num">14</span> Validation, testing and expected outcomes</h2>
+    <h3><span class="sub">14.1</span> Expected outcome at Milestone-2</h3>
+    <p>By 30 November the team expects a running, secured web application that describes NIFTY, BANK NIFTY and a few stocks, compares each day with similar past sessions, reports CAS statistics, and explains every figure, all over data whose origin can be verified. The forecasting and strategy-simulation work builds on this in the following phase. The MVP is judged against these criteria, all re-checkable on historical data:</p>
+    <ul>
+      <li>The data pipeline ingests the chosen instruments, hashes every file, and records every ingestion in the audit log.</li>
+      <li>Indicators match a reference calculation within tolerance on sample dates.</li>
+      <li>For a given session, the system returns a ranked list of similar past days from a defined distance measure.</li>
+      <li>CAS statistics are computed across the sessions for which data exists.</li>
+      <li>The API exposes documented endpoints, enforces login and authorisation, and passes its tests.</li>
+      <li>The dashboard shows all four views, each with an explanation.</li>
+      <li>The security layer demonstrates login, roles, ownership, rate limiting and validation, and shows data integrity and the audit log end to end.</li>
+    </ul>
+    <h3><span class="sub">14.2</span> How the forecasting model is tested</h3>
+    <p>The model is checked in three stages, none of which places a real trade:</p>
+    <ul>
+      <li>Walk-forward backtesting. The model trains on an earlier window and is tested on the next, then the window rolls forward. The data is never shuffled, so no future information leaks into training. This is the main, repeatable test.</li>
+      <li>A held-out block of history the model never saw during development, scored once, for an honest estimate of real-world performance.</li>
+      <li>Forward, or paper, testing on the live market. The system records each day's prediction on incoming data and scores it later against what happened. This tests the model on the live market with no order ever placed.</li>
+    </ul>
+    <p>Across all three, forecasts are judged on directional accuracy and on how well the probabilities are calibrated, for example with the Brier score and a calibration curve, compared against a simple baseline. Strategies are judged on hit rate, return against a benchmark, and largest drawdown. Results near flagged events are reported on their own, since the model is expected to do worse there. Everything is reported as research findings.</p>
+  </section>
+
+  <section id="s15">
+    <h2 class="sec"><span class="num">15</span> Timeline and milestones</h2>
+    <p>The project follows the course's assessment schedule. This proposal is Milestone-1, and the integrated MVP is due at Milestone-2.</p>
+    <div class="milestones">
+      <div class="ms"><div class="d">24 Aug 2026</div><div class="t">Milestone-0</div><div class="m">Qualifying · done</div><div class="s">Problem identification and group formation, approved.</div></div>
+      <div class="ms now"><div class="d">18 Oct 2026</div><div class="t">Milestone-1</div><div class="m">30 marks · now</div><div class="s">Proposal, requirements and feasibility, this document.</div></div>
+      <div class="ms"><div class="d">30 Nov 2026</div><div class="t">Milestone-2</div><div class="m">30 marks</div><div class="s">Design, MVP or prototype, and validation. The working platform.</div></div>
+      <div class="ms"><div class="d">End-semester</div><div class="t">Final Panel</div><div class="m">30 marks</div><div class="s">Report, presentation, demo and viva. Includes forecasting and backtesting.</div></div>
+      <div class="ms"><div class="d">End-semester</div><div class="t">Guide Evaluation</div><div class="m">10 marks</div><div class="s">Individual assessment across the project.</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--ink-faint);">A week-by-week deliverable plan for the Milestone-2 build is kept in the team's tracker and will be shown at Milestone-2.</p>
+  </section>
+
+  <section id="s16">
+    <h2 class="sec"><span class="num">16</span> Team and responsibilities</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Member</th><th>Specialisation</th><th>Owns</th></tr></thead>
+        <tbody>
+          <tr><td>Dhairya Upadhyay</td><td>Development</td><td>Backend (Node and Express API), the React dashboard, the security and data-integrity layer, and overall integration.</td></tr>
+          <tr><td>Aayush Ranjan</td><td>Data Science</td><td>Data sourcing and cleaning, including CAS, and writing cleaned data to MongoDB. Shared analysis work.</td></tr>
+          <tr><td>Mridul Kumar</td><td>Data Science</td><td>Indicator and historical-comparison analysis and CAS statistics, writing results to MongoDB, and the models later.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--ink-faint);">Add roll numbers next to each name if your submission format requires them.</p>
+  </section>
+
+  <section id="s17">
+    <h2 class="sec"><span class="num">17</span> References</h2>
+    <p style="font-size:13px;color:var(--ink-faint);">Starting references. Confirm the details before the final submission.</p>
+    <ol class="refs">
+      <li>National Stock Exchange of India. Circulars and FAQs on the Closing Auction Session and call-auction mechanism, nseindia.com.</li>
+      <li>Securities and Exchange Board of India. SEBI (Research Analysts) Regulations, 2014, with later amendments, sebi.gov.in.</li>
+      <li>J. Welles Wilder. New Concepts in Technical Trading Systems. The source of RSI and ATR.</li>
+      <li>John J. Murphy. Technical Analysis of the Financial Markets. Trend, momentum and volume concepts.</li>
+      <li>pandas, NumPy and scikit-learn documentation. Data processing and similarity search.</li>
+      <li>MongoDB, Express, Node.js and React documentation. Implementation references for the application layers.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Milestone-1 · Proposal, Requirements and Feasibility · Capstone · 2026
+  </footer>
+
+</div>
