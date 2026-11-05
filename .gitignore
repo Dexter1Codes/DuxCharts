@@ -15,3 +15,8 @@ data/
 # build output
 dist/
 build/
+
+#everything that needs to be local
+coding/CLAUDE.md
+reports/
+CLAUDE.md
