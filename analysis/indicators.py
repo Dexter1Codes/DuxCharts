@@ -9,8 +9,8 @@ def load_prices(path):
 
 def close_diff(df):
     close = df["close"]
-    df["c_diff_1d"] = close.pct_change() * 100
-    df["c_diff_5d"] = close.pct_change(5) * 100
+    df["ret_1d"] = close.pct_change() * 100
+    df["ret_5d"] = close.pct_change(5) * 100
     return df
 
 if __name__ == "__main__":
