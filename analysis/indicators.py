@@ -79,6 +79,5 @@ if __name__ == "__main__":
         df = load_prices(f"data/canonical/{s}.csv")
         df = add_indicators(df)
         df.to_csv(f"output/{s}.csv", index=False)
-        head = df.head(1)
         
         print(f"{s}: {len(df)} rows, {df["date"].iloc[0].date()}, {df["date"].iloc[-1].date()}") # iloc is for selecting dates and .date()drops the exact time stamp and sticks with date only.
