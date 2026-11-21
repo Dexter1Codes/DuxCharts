@@ -1,5 +1,5 @@
 import pandas as pd
-
+from pathlib import Path
 
 def load_prices(path):
     d = pd.read_csv(path, parse_dates=["date"])
@@ -72,9 +72,13 @@ def add_indicators(df):
 
 
 if __name__ == "__main__":
-    df = load_prices("data/canonical/NIFTY.csv")
-    length = len(df)
-    df = add_indicators(df)
-    head = df.head(50)
-    types = df.dtypes
-    print(length,  head, types)
+    symbols = ["NIFTY", "BANKNIFTY", "HDFCBANK", "ICICIBANK", "RELIANCE", "TCS"]
+    Path("output").mkdir(exist_ok=True)
+
+    for s in symbols:
+        df = load_prices(f"data/canonical/{s}.csv")
+        df = add_indicators(df)
+        df.to_csv(f"output/{s}.csv", index=False)
+        head = df.head(1)
+        
+        print(f"{s}: {len(df)} rows, {df["date"].iloc[0].date()}, {df["date"].iloc[-1].date()}") # iloc is for selecting dates and .date()drops the exact time stamp and sticks with date only.

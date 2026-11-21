@@ -13,7 +13,9 @@ def compare(main):
 
 
 if __name__ == "__main__":
-    df = load_prices("data/canonical/NIFTY.csv")
-    df = add_indicators(df)
-    print(compare(df))
+    symbols = ["NIFTY", "BANKNIFTY", "HDFCBANK", "ICICIBANK", "RELIANCE", "TCS"]
+    for s in symbols:
+        df = load_prices("data/canonical/NIFTY.csv")
+        df = add_indicators(df)
+        print(compare(df))
     
