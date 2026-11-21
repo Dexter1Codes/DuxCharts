@@ -10,6 +10,9 @@ def load_prices(path):
 
 def add_indicators(df):
     close = df["close"]
+    high = df["high"]
+    low = df["low"]
+    volume = df["volume"]
 
     #return diff
     df["ret_1d"] = close.pct_change() * 100
@@ -30,9 +33,41 @@ def add_indicators(df):
     df["sma20_slope"] = (sma20 / sma20.shift(5) - 1) * 100
     df["sma50_slope"] = (sma50 / sma50.shift(5) - 1) * 100
 
+    # Range PCT
+    df["range_pct"] = ((high - low) / close) * 100
+
+    # rel_volume
+    df["rel_volume"] = (volume / volume.rolling(20).mean())
+
     # Realized Volume (to compare from the reference)
     df["realized_vol_20"] = ret_1d.rolling(20).std() * (252 **0.5)
 
+    # next day return
+    df["ret_fwd_1d"] = ((close.shift(-1) / (close)) * 100) - 100
+
+    # atr: average daily movement over 14 days in points 
+    prev_close = close.shift(1)
+    rng = high - low
+    rng_high = (high - prev_close).abs()
+    rng_low = (low - prev_close).abs()
+
+    true_range = pd.concat([rng, rng_high, rng_low], axis=1).max(axis=1)
+
+    df["atr14"] = true_range.ewm(alpha=1/14, adjust=False).mean()
+    df["atr_pct"] = (df["atr14"] / close) * 100
+
+    #rsi14: tells momentum and how hard
+    delta = close.diff()
+    gains = delta.clip(lower=0)
+    losses = (-delta).clip(lower = 0)
+
+    avg_gain = gains.ewm(alpha=1/14, adjust=False).mean()
+    avg_loss = losses.ewm(alpha = 1/14, adjust=False).mean()
+
+    rs = avg_gain / avg_loss
+    df["rsi14"] = 100 - (100 / (1 + rs))
+
+    ## return 
     return df
 
 
