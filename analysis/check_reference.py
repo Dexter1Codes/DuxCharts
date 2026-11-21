@@ -8,7 +8,7 @@ def compare(main, symbol):
 
     missing_columns = [c for c in ref.select_dtypes("number").columns if c not in main.columns]
     assert len(ref) == len(main)
-
+    print(s)
     return missing_columns, diffs
 
 
