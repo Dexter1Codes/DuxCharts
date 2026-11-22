@@ -4,3 +4,4 @@ scikit-learn
 pymongo
 python-dotenv
 requests
+pytest
